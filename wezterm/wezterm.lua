@@ -106,28 +106,28 @@ apply_theme(current_theme)
 -- 🏷️ COLOR DE PESTAÑA POR TAB (Ctrl+Shift+Q)
 -- ══════════════════════════════════════════
 local tab_colors = {}
+local tab_titles = {}
 
 wezterm.on('format-tab-title', function(tab)
   local color = tab_colors[tab.tab_id]
+  local title = tab_titles[tab.tab_id] or tab.active_pane.title
   local t = themes[current_theme]
 
   if color then
-    -- Con color asignado: seleccionada = letras negras, no seleccionada = letras blancas
     local fg = tab.is_active and '#2D2B28' or '#FFFFFF'
     return {
       { Background = { Color = color } },
       { Foreground = { Color = fg } },
       { Attribute = { Intensity = tab.is_active and 'Bold' or 'Normal' } },
-      { Text = ' ' .. tab.active_pane.title .. ' ' },
+      { Text = ' ' .. title .. ' ' },
     }
   else
-    -- Sin color: usa los defaults del tema actual
     local style = tab.is_active and t.tab_active or t.tab_inactive
     return {
       { Background = { Color = style.bg } },
       { Foreground = { Color = style.fg } },
       { Attribute = { Intensity = tab.is_active and 'Bold' or 'Normal' } },
-      { Text = ' ' .. tab.active_pane.title .. ' ' },
+      { Text = ' ' .. title .. ' ' },
     }
   end
 end)
@@ -250,7 +250,21 @@ config.keys = {
     description = 'Nombre de la pestana:',
     action = wezterm.action_callback(function(window, pane, line)
       if line then
-        window:active_tab():set_title(line)
+        local name = line:lower()
+        local tab_id = window:active_tab():tab_id()
+        tab_titles[tab_id] = line
+
+        -- Auto-color y SSH por nombre
+        local hooks = {
+          n8n       = { color = '#6B8E5A', cmd = 'ssh -p 22 roy@212.28.178.233' },
+          openclaw  = { color = '#C47A8A', cmd = 'ssh openclaw@100.91.250.58' },
+        }
+
+        local hook = hooks[name]
+        if hook then
+          tab_colors[tab_id] = hook.color
+          pane:send_text(hook.cmd .. '\n')
+        end
       end
     end),
   }},
