@@ -1,0 +1,2 @@
+#!/bin/bash
+ssh openclaw@100.91.250.58
