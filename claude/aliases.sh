@@ -1,9 +1,9 @@
 #!/bin/bash
 # Aliases compartidos entre máquinas
-# Repo: https://github.com/Rafarafa10/scripts
+# Repo: https://github.com/Rafarafa10/dotfiles
 
 claude() {
-    git -C ~/.claude/scripts pull --quiet 2>/dev/null
+    git -C ~/dotfiles pull --quiet 2>/dev/null
     if [ -n "$TMUX" ]; then
         command claude --dangerously-skip-permissions "$@"
     else

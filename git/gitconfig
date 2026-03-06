@@ -1,0 +1,9 @@
+[user]
+	name = Rafarafa10
+	email = 200024434+Rafarafa10@users.noreply.github.com
+[credential "https://github.com"]
+	helper =
+	helper = !/home/roy/.local/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !/home/roy/.local/bin/gh auth git-credential
