@@ -1,0 +1,18 @@
+
+Host vps-n8n
+    HostName 100.96.231.46
+    User roy
+    IdentityFile ~/.ssh/id_ed25519
+    StrictHostKeyChecking yes
+
+Host vps-n8n-cc
+    HostName 100.96.231.46
+    User claudecode
+    IdentityFile ~/.ssh/id_ed25519
+    StrictHostKeyChecking yes
+
+Host laptop
+    HostName 100.104.194.23
+    User roy
+    IdentityFile ~/.ssh/id_ed25519
+    StrictHostKeyChecking yes

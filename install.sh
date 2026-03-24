@@ -54,6 +54,7 @@ link_file "$DOTFILES/wezterm/wezterm.lua"        "$HOME/.config/wezterm/wezterm.
 link_file "$DOTFILES/claude/update_claude_md.sh" "$HOME/update_claude_md.sh"
 link_file "$DOTFILES/claude/close_session.sh"    "$HOME/.claude/scripts/close_session.sh"
 link_file "$DOTFILES/claude/aliases.sh"          "$HOME/.claude/scripts/claude/aliases.sh"
+link_file "$DOTFILES/ssh/config"                "$HOME/.ssh/config"
 
 # --- Hacer scripts ejecutables ---
 chmod +x "$DOTFILES/scripts/"*
