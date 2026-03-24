@@ -53,7 +53,7 @@ link_file "$DOTFILES/tmux/tmux.conf"             "$HOME/.tmux.conf"
 link_file "$DOTFILES/wezterm/wezterm.lua"        "$HOME/.config/wezterm/wezterm.lua"
 link_file "$DOTFILES/claude/update_claude_md.sh" "$HOME/update_claude_md.sh"
 link_file "$DOTFILES/claude/close_session.sh"    "$HOME/.claude/scripts/close_session.sh"
-link_file "$DOTFILES/claude/aliases.sh"          "$HOME/.claude/scripts/aliases.sh"
+link_file "$DOTFILES/claude/aliases.sh"          "$HOME/.claude/scripts/claude/aliases.sh"
 
 # --- Hacer scripts ejecutables ---
 chmod +x "$DOTFILES/scripts/"*

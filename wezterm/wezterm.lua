@@ -242,6 +242,10 @@ config.keys = {
   -- Zoom a un panel
   { key = 'z', mods = 'CTRL|SHIFT', action = act.TogglePaneZoomState },
 
+  -- Mover pestana izquierda/derecha
+  { key = 'LeftArrow',  mods = 'CTRL|SHIFT', action = act.MoveTabRelative(-1) },
+  { key = 'RightArrow', mods = 'CTRL|SHIFT', action = act.MoveTabRelative(1) },
+
   -- Color de pestana
   { key = 'q', mods = 'CTRL|SHIFT', action = act.EmitEvent 'pick-tab-color' },
 
@@ -254,28 +258,49 @@ config.keys = {
         local tab_id = window:active_tab():tab_id()
         tab_titles[tab_id] = line
 
-        -- Auto-color y comando por nombre
-        local vps = {
-          n8n       = { color = '#6B8E5A', cmd = 'ssh -p 22 roy@212.28.178.233' },
-          openclaw  = { color = '#C47A8A', cmd = 'ssh openclaw@100.91.250.58' },
+        -- Destinos Claude Code (prefijo cc-)
+        local cc_vps = {
+          n8n      = { cmd = 'ssh vps-n8n-cc' },
+          n8nroy   = { cmd = 'ssh vps-n8n' },
+          openclaw = { cmd = 'ssh claudecode@100.91.250.58' },
         }
 
-        -- claude0-claude7: color naranja + ejecutar alias claude
-        -- Soporta: "claude0", "claude0 mi-proyecto", "claude0 openclaw mi-proyecto"
-        if name:match('^claude%d') then
-          tab_colors[tab_id] = '#DA7756'
-          local vps_key = name:match('^claude%d+%s+(%S+)')
-          if vps_key and vps[vps_key] then
-            pane:send_text(vps[vps_key].cmd .. '\n')
+        -- Destinos solo SSH (sin prefijo cc-)
+        local vps = {
+          n8n      = { color = '#6B8E5A', cmd = 'ssh vps-n8n-cc' },
+          openclaw = { color = '#C47A8A', cmd = 'ssh openclaw@100.91.250.58' },
+          laptop   = { color = '#DAB756', cmd = 'ssh laptop' },
+        }
+
+        if name:match('^cc%-') then
+          local destino = name:match('^cc%-([^%-]+)')
+
+          -- Color por destino (default naranja = gabinete/local)
+          local cc_colors = {
+            n8n      = '#6B8E5A',  -- verde
+            n8nroy   = '#6B8E5A',  -- verde
+            openclaw = '#C47A8A',  -- rosa
+          }
+          tab_colors[tab_id] = cc_colors[destino] or '#DA7756'
+
+          if destino and cc_vps[destino] then
+            -- Destino remoto -> SSH + claude
+            pane:send_text(cc_vps[destino].cmd .. '\n')
             wezterm.time.call_after(3, function()
-              pane:send_text('claude\n')
+              pane:send_text('claude ' .. name .. '\n')
             end)
           else
-            pane:send_text('claude\n')
+            -- cc-gabinete-* o destino no reconocido -> local
+            pane:send_text('claude ' .. name .. '\n')
           end
-        elseif vps[name] then
-          tab_colors[tab_id] = vps[name].color
-          pane:send_text(vps[name].cmd .. '\n')
+
+        else
+          -- Sin prefijo cc- -> solo SSH si es VPS conocido
+          local vps_name = name:match('^(%S+)')
+          if vps_name and vps[vps_name] then
+            tab_colors[tab_id] = vps[vps_name].color
+            pane:send_text(vps[vps_name].cmd .. '\n')
+          end
         end
       end
     end),
